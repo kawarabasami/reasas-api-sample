@@ -94,20 +94,33 @@ export class AppComponent {
   onCheckboxChanged(isChecked: boolean, pref: Prefecture) {
 
     if (isChecked) {
-      this.addedChartPrefs.push(pref);
-      this.chart.addSeries({
-        name: `${pref.prefName}`,
-        type: 'line',
-        data: [
-          [1990, Math.floor(Math.random() * 10)],
-          [2000, Math.floor(Math.random() * 10)],
-          [2010, Math.floor(Math.random() * 10)]
-        ]
-      }, true, true);
+      // チェックONにした場合
+
+      // 人口推移を取得
+      this.reasasApiSvc.getPopTransition(pref).subscribe((transData) => {
+
+        // 人口推移をグラフに表示する
+        this.chart.addSeries({
+          name: `${pref.prefName}`,
+          type: 'line',
+          data: transData.map((data) => [data.year, data.value]),
+        }, true, true);
+
+        // グラフに登録したデータを記憶(グラフから消去する際に利用)
+        this.addedChartPrefs.push(pref);
+
+      });
+
     } else {
+      // チェックOFFにした場合
+
+      // チェックOFFにした都道府県の順番を確認
       const idx = this.addedChartPrefs.findIndex(item => item.prefCode === pref.prefCode);
       if (idx != null) {
+        // 見つかったらグラフから消去
         this.chart.removeSeries(idx);
+
+        // 記憶領域から削除
         this.addedChartPrefs = this.addedChartPrefs.filter(item => item.prefCode !== pref.prefCode);
       }
     }
