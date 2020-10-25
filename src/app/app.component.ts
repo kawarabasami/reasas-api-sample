@@ -97,7 +97,7 @@ export class AppComponent {
       // チェックONにした場合
 
       // 人口推移を取得
-      this.reasasApiSvc.getPopTransition(pref).subscribe((transData) => {
+      this._subsc.add(this.reasasApiSvc.getPopTransition(pref).subscribe((transData) => {
 
         // 人口推移をグラフに表示する
         this.chart.addSeries({
@@ -109,7 +109,7 @@ export class AppComponent {
         // グラフに登録したデータを記憶(グラフから消去する際に利用)
         this.addedChartPrefs.push(pref);
 
-      });
+      }));
 
     } else {
       // チェックOFFにした場合
