@@ -1,3 +1,16 @@
-<div class="content">
-  <li *ngFor="let pref of prefectures">{{pref.prefCode}}:{{pref.prefName}}</li>
+<div class="container">
+  <div class="title">
+    <h1>都道府県別 総人口推移グラフ</h1>
+  </div>
+
+  <div class="prefectures">
+    <mat-checkbox class="checkbox-pref" *ngFor="let pref of prefectures"
+      (change)="onCheckboxChanged($event.checked, pref)">
+      {{pref.prefName}}
+    </mat-checkbox>
+  </div>
+
+  <div class="chart">
+    <div [chart]="chart"></div>
+  </div>
 </div>
