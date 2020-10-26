@@ -123,6 +123,10 @@
               "devServerTarget": "reasas-api-sample:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {}
         }
       }
     }
