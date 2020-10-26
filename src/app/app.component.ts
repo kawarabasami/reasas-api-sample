@@ -44,15 +44,18 @@ export class AppComponent {
   });
 
   /**
-   * 都道府県一覧データ.
+   * チェックボックス欄に表示する都道府県一覧データ.
+   * disabled=trueの間、チェックボックスは触れなくなる。
    *
-   * @type {Prefecture[]}
+   * @type {{ disabled: boolean, pref: Prefecture }[]}
    * @memberof AppComponent
    */
-  prefectures: Prefecture[] = [];
+  prefChkboxRecs: { disabled: boolean, prefData: Prefecture }[] = [];
 
   /**
    * 都道府県一覧 インデックス情報管理用.
+   * 人口推移グラフ追加時、この配列にも都道府県情報を格納する.
+   * chartからグラフを削除する際、削除対象のインデックスを求めるのに使用する.
    *
    * @memberof AppComponent
    */
@@ -73,7 +76,10 @@ export class AppComponent {
 
     // 都道府県一覧を取得する
     this._subsc.add(this.reasasApiSvc.getPrefectures().subscribe((data) => {
-      this.prefectures = data;
+      // チェックボックス表示用データに整形して格納
+      this.prefChkboxRecs = data.map((d) => {
+        return { disabled: false, prefData: d };
+      });
     }));
 
   }
@@ -91,10 +97,16 @@ export class AppComponent {
    * @param isChecked 
    * @param pref 
    */
-  onCheckboxChanged(isChecked: boolean, pref: Prefecture) {
+  onCheckboxChanged(isChecked: boolean, prefChkboxRec: { disabled: boolean, prefData: Prefecture }) {
+
+    // チェックした都道府県を取得
+    const pref = prefChkboxRec.prefData;
 
     if (isChecked) {
       // チェックONにした場合
+
+      // チェックボックスを一時無効化
+      prefChkboxRec.disabled = true;
 
       // 人口推移を取得
       this._subsc.add(this.reasasApiSvc.getPopTransition(pref).subscribe((transData) => {
@@ -108,6 +120,9 @@ export class AppComponent {
 
         // グラフに登録したデータを記憶(グラフから消去する際に利用)
         this.addedChartPrefs.push(pref);
+
+        // チェックボックスの無効化解除
+        prefChkboxRec.disabled = false;
 
       }));
 

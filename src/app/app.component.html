@@ -7,9 +7,9 @@
 
   <div class="prefectures">
     <h2 class="title2">都道府県</h2><br>
-    <mat-checkbox class="checkbox-pref" *ngFor="let pref of prefectures"
-      (change)="onCheckboxChanged($event.checked, pref)">
-      {{pref.prefName}}
+    <mat-checkbox class="checkbox-pref" *ngFor="let p of prefChkboxRecs" [disabled]="p.disabled"
+      (change)="onCheckboxChanged($event.checked, p)">
+      {{p.prefData.prefName}}
     </mat-checkbox>
   </div>
 
